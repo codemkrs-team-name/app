@@ -27,7 +27,9 @@ def parse_venue(venue_el):
 def month_index(month_name):
   return MONTHS.index(month_name)+1
 
-def parse_calendar(html):
+def parse_calendar(day=None):
+  resp = requests.get('http://www.wwoz.org/new-orleans-community/music-calendar')
+  html = BeautifulSoup(resp.text)
   events = []
   for el in html.find_all('div',{'class':'music-event'}):
     venue_name = el.find('div',{'class':'venue-name'})
@@ -52,9 +54,12 @@ def parse_calendar(html):
 def write_events(events):
   write_csv('events.csv',events,'name','venue','venue_url','date')
 
-def parse_venue_html(html):
+def parse_venue(venueid):
+  url = 'http://www.wwoz.org/new-orleans-community/music-venues/'+venueid
+  resp = requests.get(url)
+  html = BeautifulSoup(resp.text)
   location = html.find('div',{'class':'location'})
-  result = dict(name=html.find('h1',{'class':'title'}).text)
+  result = dict(url=url,name=html.find('h1',{'class':'title'}).text)
   for field in ['street-address','locality','region','postal-code']:
     e = location.find('span',{'class':field})
     if e:
