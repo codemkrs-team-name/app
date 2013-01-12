@@ -19,7 +19,7 @@ p = pdt.Calendar(c)
 
 MONTHS = ['JAN','FEB','MAR','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
 
-def parse_venue(venue_el):
+def parse_venue_el(venue_el):
   name = venue_el.find('a').text
   href = venue_el.find('a')['href']
   return dict(name=name,url=href)
@@ -28,13 +28,17 @@ def month_index(month_name):
   return MONTHS.index(month_name)+1
 
 def parse_calendar(day=None):
-  resp = requests.get('http://www.wwoz.org/new-orleans-community/music-calendar')
+  url = 'http://www.wwoz.org/new-orleans-community/music-calendar'
+  params = {}
+  if day:
+    params['start_date'] = day
+  resp = requests.get(url,params=params)
   html = BeautifulSoup(resp.text)
   events = []
   for el in html.find_all('div',{'class':'music-event'}):
     venue_name = el.find('div',{'class':'venue-name'})
     if venue_name:
-      current_venue = parse_venue(venue_name)
+      current_venue = parse_venue_el(venue_name)
     cal_date = el.find('div',{'class':'cal-date'})
     if cal_date:
       month = cal_date.find('span',{'class':'month'}).text
@@ -46,6 +50,7 @@ def parse_calendar(day=None):
     date,idunno = p.parse(full_date)
     event = dict(name=event_name,month=month_index(month),day=day,
         venue=current_venue['name'],
+        venueid=current_venue['url'].rsplit('/',2)[-1],
         venue_url='http://www.wwoz.org'+current_venue['url'],
         date="%d-%02d-%02d %02d:%02d" % (date[0],date[1],date[2],date[3],date[4]))
     events.append(event)
