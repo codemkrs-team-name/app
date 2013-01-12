@@ -3,25 +3,16 @@ from bs4 import BeautifulSoup
 from csvutils import write_csv
 import requests
 from datetime import date,timedelta
-import json
 
 def write_events(events):
-  items = []
-  for e in events:
-    item = dict(eventName=e['name'],
-        venue=e['venue'],
-        time=e['date'],
-        image=None,
-        price=None,
-        description=None,
-        links=[])
-    items.append(item)
-  json.dump(items,open('livewire_events.json','w'))
+  print events
+  write_csv('livewire_events.csv',events,'name','venue','venueid','venue_url','venueid','date')
 
 if __name__ == '__main__':
   today = date.today()
   events = []
-  for n in xrange(0,1):
+  for n in xrange(0,3):
     day = today + timedelta(n)
+    print day
     events += sorted(livewire.parse_calendar(day),key=lambda x:x['name'])
   write_events(events)

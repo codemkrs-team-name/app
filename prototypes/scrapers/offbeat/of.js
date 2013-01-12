@@ -29,7 +29,7 @@ function getEventsOn(callback) {	return function(formattedDate) {
 				,pars 			= _.where(allNodes, {name: 'p'}).slice(3, -1)
 				;
 			results.push(_.map(pars, parse));
-			callback(results);
+			callback(_.flatten(results));
 		});
 
 		var parser = new htmlparser.Parser(handler);
