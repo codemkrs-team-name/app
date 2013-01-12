@@ -108,21 +108,3 @@ def geocode(location):
     print "error for %s, %s" % (location,e)
   return None
 
-
-if __name__ == '__old__':
-  soup = BeautifulSoup(open("livewire.html"))
-  events = sorted(parse_calendar(soup),key=lambda x:x['name'])
-  write_events(events)
-
-if __name__ == '__main__':
-  soup = BeautifulSoup(open("livewire.html"))
-  events = sorted(parse_calendar(soup),key=lambda x:x['name'])
-  venues = []
-  for evt in events:
-    url = evt['venue_url']
-    r = requests.get(url.strip())
-    venue = parse_venue_html(BeautifulSoup(r.text))
-    venue['geo'] = geocode("%(street-address)s, %(locality)s, %(region)s" % venue)
-    venues.append(venue)
-  outfile = open('venues.json','w')
-  json.dump(dict(venues=venues), outfile,sort_keys=True, indent=4)
