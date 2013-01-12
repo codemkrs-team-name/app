@@ -21,7 +21,7 @@ rest.get(source).on('complete', function(result) {
   	var entries = _.map(result.feed.entry, function(x){
   		return {
   			 eventName: x.title[0]._
-  			,location: fix(x.content[0]._.match(location)[1])
+  			,venue: fix(x.content[0]._.match(location)[1])
   			,time: fix(x.content[0]._.match(time)[1])
   			,image: null
   			,price: null
