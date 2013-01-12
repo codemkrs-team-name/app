@@ -73,6 +73,12 @@ def parse_venue(venueid):
       e = location.find('div',{'class':field})
       if e:
         result[field] = e.text
+  if 'street-address' in result:
+    geo = geocode("%(street-address)s, %(locality)s, %(region)s" % result)
+    if geo:
+      gaddr, (lat,lon) = geo
+      result['lat'] = str(lat)
+      result['lon'] = str(lon)
   contact_info = html.find('div',{'class':'contact-info'})
   if contact_info:
     for fi in contact_info.find_all('p',{'class':'field-item'}):

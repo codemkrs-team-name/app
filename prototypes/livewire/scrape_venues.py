@@ -17,4 +17,4 @@ if __name__ == '__main__':
       venue['venuepage_label'] = ''
       venue['venuepage_href'] = ''
     venues.append(venue)
-  write_csv('livewire_venues.csv',venues,'name','url','venuepage_label','venuepage_href','street-address','locality','region','phone','mail','postal-code')
+  write_csv('livewire_venues.csv',venues,'name','url','venuepage_label','venuepage_href','street-address','locality','region','phone','mail','postal-code','lat','lon')
