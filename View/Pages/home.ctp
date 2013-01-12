@@ -38,7 +38,7 @@
 		float: left;
 	}
 	.details {
-		padding-left: .5em;
+		padding-left: .2em;
 	}
 	.event-name {
 		width: 100%;

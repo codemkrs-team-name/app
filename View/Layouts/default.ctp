@@ -42,18 +42,18 @@ echo $this->Facebook->html();
 <body>
 <div data-role="page">
 
-    <div data-role="header" data-theme="c">
+    <div data-role="header" data-theme="a" data-position="fixed">
         <h1>My Title</h1>
         <?php echo $this->Flash->show(); ?>
         <?php echo $this->Session->flash(); ?>
-        <?php echo $this->fetch('content'); ?>          
         <?php echo $this->element('sql_dump'); ?>   
     </div>
 
     <div data-role="content"  data-theme="c">   
-        <p>Hello world</p>      
+        <?php echo $this->fetch('content'); ?>          
     </div>
-
+    <div data-role="footer" data-theme="a" class="ui-bar">
+    </div>
 </div>
 <?= $this->Facebook->init() ?>
 </body>
