@@ -3,7 +3,6 @@ import csv
 import cStringIO
 from csvkit.unicsv import UnicodeCSVDictReader,UnicodeCSVWriter
 
-
 def read_csv(filename):
   f = open(filename,'r')
   reader = UnicodeCSVDictReader(f)
