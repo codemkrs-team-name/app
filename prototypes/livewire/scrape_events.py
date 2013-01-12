@@ -16,12 +16,12 @@ def write_events(events):
         description=None,
         links=[])
     items.append(item)
-  json.dump(items,open('livewire_events.json','w'))
+  print json.dumps(items,indent=2)
 
 if __name__ == '__main__':
   today = date.today()
   events = []
-  for n in xrange(0,1):
+  for n in xrange(0,3):
     day = today + timedelta(n)
     events += sorted(livewire.parse_calendar(day),key=lambda x:x['name'])
   write_events(events)
