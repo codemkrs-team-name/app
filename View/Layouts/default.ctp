@@ -28,7 +28,9 @@ echo $this->Facebook->html();
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-	<script type="text/javascript" src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.0.rc.1/handlebars.min.js"></script>
 	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/js/common.js"></script>
 	<script type="text/javascript" src="/js/site.js"></script>        
@@ -39,7 +41,7 @@ echo $this->Facebook->html();
 <body>
 <div data-role="page">
 
-    <div data-role="header">
+    <div data-role="header" data-theme="c">
         <h1>My Title</h1>
         <?php echo $this->Flash->show(); ?>
         <?php echo $this->Session->flash(); ?>
@@ -47,7 +49,7 @@ echo $this->Facebook->html();
         <?php echo $this->element('sql_dump'); ?>   
     </div>
 
-    <div data-role="content">   
+    <div data-role="content"  data-theme="c">   
         <p>Hello world</p>      
     </div>
 
