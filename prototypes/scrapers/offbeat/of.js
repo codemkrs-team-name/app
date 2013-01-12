@@ -1,11 +1,10 @@
-var  sys 					= require('util')
-		,rest 				= require('restler')
-		,_ 						= require('./underscoreExtensions')
-		,htmlparser 	= require("htmlparser");		
-
+var  rest 			= require('restler')
+	,_ 				= require('./underscoreExtensions')
+	,htmlparser 	= require("htmlparser")
+	;
 var	 ondate 			= 20130111
-		,log  				= _.bind(console.log, console)
-		;
+	,log  				= _.bind(console.log, console)
+	;
 rest.get('http://www.offbeat.com/new-listings/?g=listing&d=date&t=detail&v='+ondate).on('complete', function(rawhtml) {
 	var handler = new htmlparser.DefaultHandler(function (error, dom) {
 		if (error) return console.error(error);
@@ -29,7 +28,7 @@ function parse(p) {
 			;
 	return {
 		 event: text(anchors[0])
-		,location: text(anchors[1])
+		,venue: text(anchors[1])
 		,time: text(texts[0])
 		,image: null
 		,price: null
