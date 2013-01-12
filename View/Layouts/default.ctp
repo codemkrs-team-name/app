@@ -16,6 +16,7 @@ echo $this->Facebook->html();
 		echo $this->Html->meta('icon');
 		echo $this->fetch('meta');    
     ?>
+    <link href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" rel="stylesheet">
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="/css/screen.css" rel="stylesheet"> 
@@ -26,11 +27,8 @@ echo $this->Facebook->html();
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-	<script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
-    <script type="text/javascript" src="/js/ui/1.8.22/jquery-ui-1.8.22.custom.min.js"></script>
-	<script type="text/javascript" src="/js/ui/1.8/jquery.ui.dialog.custom.js"></script>   
-    <script type="text/javascript" src="/js/jquery.fixedCenter.js"></script>  
-    <script type="text/javascript" src="/js/jquery.form.js"></script>  
+    <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.js"></script>
 	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/js/common.js"></script>
 	<script type="text/javascript" src="/js/site.js"></script>        
@@ -39,17 +37,21 @@ echo $this->Facebook->html();
 	?>
 </head>
 <body>
-<div id='base'>
-	<div id='header'>
-    	<h1>Nola event map</h1>
-    </div>    
- 	<div id='content' class='container-fluid'>
+<div data-role="page">
+
+    <div data-role="header">
+        <h1>My Title</h1>
         <?php echo $this->Flash->show(); ?>
-		<?php echo $this->Session->flash(); ?>
-		<?php echo $this->fetch('content'); ?>        	
-		<?php echo $this->element('sql_dump'); ?>   
-	</div><!-- end content -->  
-</div><!--end base -->
+        <?php echo $this->Session->flash(); ?>
+        <?php echo $this->fetch('content'); ?>          
+        <?php echo $this->element('sql_dump'); ?>   
+    </div>
+
+    <div data-role="content">   
+        <p>Hello world</p>      
+    </div>
+
+</div>
 <?= $this->Facebook->init() ?>
 </body>
 </html>
