@@ -1,0 +1,6 @@
+<?php
+
+phpinfo();
+
+debug($results);
+?>

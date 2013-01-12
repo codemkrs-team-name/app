@@ -17,10 +17,11 @@ class DATABASE_CONFIG {
 	public $production = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => true,
-		'host' => 'localhost',
-		'login' => '',
-		'password' => '',
-		'database' => '',
+		'host' => 'ec2-50-16-133-200.compute-1.amazonaws.com',
+		'port' => '3306',
+		'login' => 'events',
+		'password' => 'banana',
+		'database' => 'nola_event_map',
 		'encoding' => 'utf8'
 	);
 
@@ -62,14 +63,15 @@ class DATABASE_CONFIG {
 		
 		if ($_SERVER['SERVER_ADDR'] == '127.0.0.1')
 		{
-			$this->default = $this->development;
+			$this->default = $this->production;
 			$this->wordpress = $this->developmentWordpress;
+			
 		}
 		else
-		{
+		{ 
 			$this->default = $this->production;
 			$this->wordpress = $this->productionWordpress;			
-		}   
+		}  
     }
 	
     function DATABASE_CONFIG()
