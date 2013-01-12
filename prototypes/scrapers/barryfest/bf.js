@@ -2,8 +2,11 @@ var  sys 			= require('util')
 		,rest 		= require('restler')
 		,xml2js		= require('xml2js')
 		,_ 				= require('underscore')
+    ,fs       = require('fs')
 		
     ,source   = 'http://www.google.com/calendar/feeds/matthew.r.rosenthal%40gmail.com/public/basic'
+    ,output   = 'bf.json'
+
 		,time 		= /When:\s*([^<]*)<.*/
 		,location = /Where:\s*([^<]*)<.*/
 		;
@@ -13,17 +16,25 @@ rest.get(source).on('complete', function(result) {
   if (result instanceof Error) 
     return sys.puts('Error: ' + result.message);		
 
-  parser.parseString(result, function (err, result) {
-  	var entries = _.first(_.map(result.feed.entry, function(x){
+  parser.parseString(result, function parse(err, result) {
+
+  	var entries = _.map(result.feed.entry, function(x){
   		return {
   			 eventName: x.title[0]._
   			,location: fix(x.content[0]._.match(location)[1])
   			,time: fix(x.content[0]._.match(time)[1])
-  			,image: "?"
-  			,price: "?"
+  			,image: null
+  			,price: null
+        ,description: null
+        ,links: x.link[0] && [
+          {
+             type: 'gcal'
+            ,link: x.link[0].$.href
+          }
+        ] || []
   		}
-  	} ), 5);	
-		console.log(entries);
+  	} );	
+		fs.writeFile(output, JSON.stringify(entries));
   });
 });
 
