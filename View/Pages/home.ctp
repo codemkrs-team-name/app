@@ -55,7 +55,7 @@
 	.venue:after {
 		content: ", ";
 	}
-	.icon {
+	#events-list .icon {
 		margin-right: 1em;
 	}
 	.icon.info:after{

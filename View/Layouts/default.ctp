@@ -38,23 +38,86 @@ echo $this->Facebook->html();
 	<?php
 		echo $this->fetch('script');
 	?>
+    <style>
+    .ui-header {
+        min-height: 55px;
+    }
+    .ui-header .icon.logo {
+        font-size: 50px;
+        top: 18px;
+        left: 10px;
+        position: relative;
+    }
+    nav #actions li {
+        display: inline-block;
+        padding: 0 5px;
+        border: 1px dotted grey;
+    }
+    nav #actions li.toggled {
+        background-color: lightgrey;
+    }
+    .ui-header nav {
+        text-align: center;
+        margin-top: -10px;        
+    }
+    .ui-header .icon {
+        font-size: 40px;
+    }
+    #search {
+        height: 2em;
+    }
+    </style>
 </head>
 <body>
 <div data-role="page">
 
     <div data-role="header" data-theme="a" data-position="fixed">
-        <h1>My Title</h1>
-        <?php echo $this->Flash->show(); ?>
-        <?php echo $this->Session->flash(); ?>
-        <?php echo $this->element('sql_dump'); ?>   
+        <span class="icon logo">
+            &#9884;
+        </span>
+        <nav>
+            <ul id="actions">
+                <li><span class="icon map">M</span></li>
+                <li><span class="icon star">&#8902;</span></li>
+                <li data-toggletarget="#search-area"><span class="icon search">?</span></li>
+            </ul>
+        </nav>
+        <div id="search-area" style="display: none">
+            <input type="search" id="search" data-theme="c" placeholder="Search Act, Venue, Category" value="" />            
+        </div>
     </div>
 
     <div data-role="content"  data-theme="c">   
         <?php echo $this->fetch('content'); ?>          
+        <?php echo $this->Flash->show(); ?>
+        <?php echo $this->Session->flash(); ?>
+        <?php echo $this->element('sql_dump'); ?>   
     </div>
     <div data-role="footer" data-theme="a" class="ui-bar">
     </div>
 </div>
 <?= $this->Facebook->init() ?>
+
+<script>
+$.widget('codemkrs.toggleAreaTab', {
+    options: {
+        target: null
+    }
+    ,_create: function() {
+        this.element.toggle(this.onOff(true), this.onOff(false));
+    }
+    ,onOff: function(swtch) {return _.bind(function(){
+        this.element.toggleClass('toggled', swtch);
+        $(this.options.target)[swtch?'slideDown':'slideUp']();
+    }, this) }
+});
+$(document).on('pageinit', function(){
+    $('[data-toggletarget]').each(function() {
+        $(this).toggleAreaTab({
+            target: $(this).data('toggletarget')
+        })
+    });
+});
+</script>
 </body>
 </html>
