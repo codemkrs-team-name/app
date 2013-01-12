@@ -42,7 +42,7 @@ function parse(p) {
 		,texts =  _.where(p.children, {type: 'text'})
 		;
 	return {
-		 event: text(anchors[0])
+		 eventName: text(anchors[0])
 		,venue: text(anchors[1])
 		,time: text(texts[0])
 		,image: null
