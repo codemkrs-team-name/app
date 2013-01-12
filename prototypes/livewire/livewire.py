@@ -19,7 +19,7 @@ p = pdt.Calendar(c)
 
 MONTHS = ['JAN','FEB','MAR','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
 
-def parse_venue(venue_el):
+def parse_venue_el(venue_el):
   name = venue_el.find('a').text
   href = venue_el.find('a')['href']
   return dict(name=name,url=href)
@@ -27,12 +27,18 @@ def parse_venue(venue_el):
 def month_index(month_name):
   return MONTHS.index(month_name)+1
 
-def parse_calendar(html):
+def parse_calendar(day=None):
+  url = 'http://www.wwoz.org/new-orleans-community/music-calendar'
+  params = {}
+  if day:
+    params['start_date'] = day
+  resp = requests.get(url,params=params)
+  html = BeautifulSoup(resp.text)
   events = []
   for el in html.find_all('div',{'class':'music-event'}):
     venue_name = el.find('div',{'class':'venue-name'})
     if venue_name:
-      current_venue = parse_venue(venue_name)
+      current_venue = parse_venue_el(venue_name)
     cal_date = el.find('div',{'class':'cal-date'})
     if cal_date:
       month = cal_date.find('span',{'class':'month'}).text
@@ -44,6 +50,7 @@ def parse_calendar(html):
     date,idunno = p.parse(full_date)
     event = dict(name=event_name,month=month_index(month),day=day,
         venue=current_venue['name'],
+        venueid=current_venue['url'].rsplit('/',2)[-1],
         venue_url='http://www.wwoz.org'+current_venue['url'],
         date="%d-%02d-%02d %02d:%02d" % (date[0],date[1],date[2],date[3],date[4]))
     events.append(event)
@@ -52,9 +59,12 @@ def parse_calendar(html):
 def write_events(events):
   write_csv('events.csv',events,'name','venue','venue_url','date')
 
-def parse_venue_html(html):
+def parse_venue(venueid):
+  url = 'http://www.wwoz.org/new-orleans-community/music-venues/'+venueid
+  resp = requests.get(url)
+  html = BeautifulSoup(resp.text)
   location = html.find('div',{'class':'location'})
-  result = dict(name=html.find('h1',{'class':'title'}).text)
+  result = dict(url=url,name=html.find('h1',{'class':'title'}).text)
   for field in ['street-address','locality','region','postal-code']:
     e = location.find('span',{'class':field})
     if e:
@@ -63,6 +73,12 @@ def parse_venue_html(html):
       e = location.find('div',{'class':field})
       if e:
         result[field] = e.text
+  if 'street-address' in result:
+    geo = geocode("%(street-address)s, %(locality)s, %(region)s" % result)
+    if geo:
+      gaddr, (lat,lon) = geo
+      result['lat'] = str(lat)
+      result['lon'] = str(lon)
   contact_info = html.find('div',{'class':'contact-info'})
   if contact_info:
     for fi in contact_info.find_all('p',{'class':'field-item'}):

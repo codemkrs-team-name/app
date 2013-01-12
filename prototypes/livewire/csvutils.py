@@ -38,5 +38,5 @@ def write_csv(filename,data,*headers):
   for datum in data:
     row = []
     for h in headers:
-      row.append(datum[h])
+      row.append(datum.get(h,''))
     writer.writerow(row)
