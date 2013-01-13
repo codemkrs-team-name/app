@@ -7,12 +7,17 @@ from fuzzywuzzy import process
 import HTMLParser
 import codecs
 import csv
-import cStringIO
+import StringIO
 from csvkit.unicsv import UnicodeCSVDictReader,UnicodeCSVWriter
+import requests
 
-def read_csv(filename):
-  f = open(filename,'r')
-  reader = UnicodeCSVDictReader(f)
+ARTIST_URL = 'https://docs.google.com/spreadsheet/pub?key=0AgYaEMipFpK9dHBEMkVqR2I4ZlVpM0pSNDVuOEwtVFE&single=true&gid=0&output=csv'
+VENUE_URL = 'https://docs.google.com/spreadsheet/pub?key=0AgYaEMipFpK9dFNab1JNM01CUnhLUDk2WnhPVzlZWGc&single=true&gid=0&output=csv'
+
+def read_csv(url):
+  resp = requests.get(url)
+  csvfile = StringIO.StringIO(resp.text.encode("utf-8"))
+  reader = UnicodeCSVDictReader(csvfile,encoding=resp.encoding)
   return list(reader)
 
 def canonical(string):
@@ -38,6 +43,10 @@ def artists_for_name(name):
   for artist_name,artist in artists_index.items():
     if name.find(artist_name) != -1:
       artists.append(artist)
+  # TODO: split on comma (,) 
+  # and/& 
+  # feat. featuring
+  # +
   return artists
 
 
@@ -56,13 +65,14 @@ def venue_for_name(name):
     return venues_index[hit]
   return None
 
-
-
 if __name__ == '__main__':
-  artists = read_csv('artists.csv')
+  artists = read_csv(ARTIST_URL)
   artists_index = index(artists)
-  venues = read_csv('venues.csv')
+  print "%d artists" % len(artists)
+
+  venues = read_csv(VENUE_URL)
   venues_index = index(venues)
+  print "%d venues" % len(venues)
 
   events = json.load(sys.stdin)
   html_parser = HTMLParser.HTMLParser()
@@ -70,10 +80,11 @@ if __name__ == '__main__':
   for evt in events:
     name = html_parser.unescape(evt['eventName']).strip()
     evt['eventName'] = name
-    # TODO: get ranking in here
     evt['ranking'] = 0
     venue_name = html_parser.unescape(evt['venue'])
     evt_artists = artists_for_name(name)
+    if len(evt_artists):
+      evt['ranking'] = max([int(a['rating']) for a in evt_artists])
     desc = []
     tags = []
     for artist in evt_artists:
