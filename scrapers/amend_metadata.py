@@ -132,7 +132,7 @@ def update_event_with_artists(evt,evt_artists):
       add_event_link(evt,'artist',artist_url,artist['name'])
     # integration with www.digitaltipjar.com
     tip_id = artist.get('tip_id')
-    if artist_url:
+    if tip_id:
       add_event_link(evt,'artist_tip',"http://www.digitaltipjar.com/%s" % tip_id,artist['name']+" (Digital Tip Jar)")
   if len(desc):
     evt['description'] = "".join(desc)
@@ -149,7 +149,8 @@ if __name__ == '__main__':
   venues_index = index(venues,canonical_venue)
   print "%d venues" % len(venues)
 
-  events = json.load(sys.stdin)
+  infile = sys.argv[1]
+  events = json.load(open(infile,'r'))
   html_parser = HTMLParser.HTMLParser()
 
   for evt in events:
@@ -167,8 +168,6 @@ if __name__ == '__main__':
       update_event_with_venue(evt,venue)
     else:
       print "No Venue: %s" % venue_name
-    #print evt
-
-if __name__ == '__main__':
-  f = open('target/events-final.json','w')
+  outfile = sys.argv[2]
+  f = open(outfile,'w')
   json.dump(events,f,indent=2)

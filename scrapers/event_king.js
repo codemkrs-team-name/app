@@ -60,18 +60,12 @@ var scraper = function(cmd, outfile) {
 	};
 };
 
-var scrapers;
-if (refresh) {
-	var scrapers = [
-		scraper('livewire/bin/python livewire/scrape_events.py','target/lw.json'),
-		scraper('node offbeat/of.js', 'target/of.json'),
-		scraper('node barryfest/bf.js', 'target/bf.json')
-	];
-} else {
-	var scrapers = [
-		scraper(null, 'events.json')
-	];
-}
+var scrapers = [
+  scraper('livewire/bin/python livewire/scrape_events.py','target/lw.json'),
+  scraper('node offbeat/of.js', 'target/of.json'),
+  scraper('node barryfest/bf.js', 'target/bf.json')
+];
+var outfile = process.argv[2]
 var scrapersRunning = scrapers.length;
 scrapers.forEach(function(s) {
 	s(function() {
@@ -83,27 +77,10 @@ scrapers.forEach(function(s) {
 				}
 				return diff;
 			});
-			var tableData = '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><link rel="stylesheet" type="text/css" href="thing.css" /></head><body><table>';
-				tableData += '<tr><th>Event Name</th><th>Venue</th><th>Time</th></tr>';
-			eventList.forEach(function(e) {
-				tableData += '<tr>' +
-					'<td>' + e.eventName + '</td>' +
-					'<td>' + e.venue + '</td>' +
-					'<td>' + e.time.format("ddd MMMM Do, h:mm a") + '</td>' +
-					'</tr>';
-			});
-			tableData += '</table></body></html>';
-			fs.writeFileSync('target/events.html', tableData);
 			eventList.forEach(function(e) {
 				e.time = e.time.unix();
 			});
-			fs.writeFileSync('target/events-' + moment().format('YYYY-MM-DD') + '.json', JSON.stringify(eventList));
-			fs.writeFileSync('target/events.json', JSON.stringify(eventList,null,'  '));
-			fuzzyMatches.sort(function(a, b) {
-				return a.localeCompare(b);
-			});
-			console.log(fuzzyMatches);
-			console.log('finished');
+			fs.writeFileSync(outfile, JSON.stringify(eventList,null,'  '));
 		}
 	});
 });
