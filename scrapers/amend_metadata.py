@@ -2,7 +2,6 @@
 import json
 import sys
 import re
-from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import HTMLParser
 import codecs
@@ -49,40 +48,46 @@ def index(rows,index_func=canonical):
           indexed_rows[index_func(name)] = r
   return indexed_rows
   
-def single_artist_for_name(name):
+def single_artist_for_name(name,score=80):
   global artists_index
   name = canonical_artist(name)
   # look for exact match
   artist = artists_index.get(name)
   if artist:
     return artist
-  hit,score = process.extractOne(name,artists_index.keys())
-  # 90 is excellent
-  # 80 is good
-  # lets be optimisitic
-  if score >= 80:
-    return artists_index[hit]
+  if score < 100:
+    hit = process.extractOne(name,artists_index.keys())
+    # 90 is excellent
+    # 80 is good
+    # lets be optimisitic
+    if hit and hit[1] >= 80:
+      return artists_index[hit[0]]
   return None
 
 def artists_for_name(name):
   global artists_index
   # try for a direct match
-  single = single_artist_for_name(name)
-  if single:
-    return [single]
-  # look for joined acts and try
+  exact_match = single_artist_for_name(name,110)
+  if exact_match:
+    return [exact_match]
+  # look for joined acts and try to get all the artists
   for sep in ['\+','featuring','feat.','&','and']:
     pattern = r'\s+'+sep+r'\s+'
     matches = []
     parts = re.split(pattern,name)
     if len(parts) > 1:
       for part in parts:
-        m = single_artist_for_name(part)
+        m = single_artist_for_name(part,90)
         if m:
           matches.append(m)
     if len(matches):
       return matches
-  return []
+  # try a fuzzier match on whole name
+  last_try = single_artist_for_name(name,80)
+  if last_try:
+    return [last_try]
+  else:
+    return []
 
 
 def venue_for_name(name):
