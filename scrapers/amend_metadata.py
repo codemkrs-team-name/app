@@ -101,10 +101,10 @@ def venue_for_name(name):
   return None
 
 def update_event_with_venue(evt,venue):
-  if venue['street-address']:
+  if venue['address']:
     evt['address'] = ('''
 %(address)s<br>
-%(city)s, %(state)s %(zip)code)s
+%(city)s, %(state)s %(zip)s
         ''' % venue).strip()
   if venue.get('price'):
     evt['price'] = venue['price']
@@ -130,6 +130,10 @@ def update_event_with_artists(evt,evt_artists):
     artist_url = artist.get('url')
     if artist_url:
       add_event_link(evt,'artist',artist_url,artist['name'])
+    # integration with www.digitaltipjar.com
+    tip_id = artist.get('tip_id')
+    if artist_url:
+      add_event_link(evt,'artist_tip',"http://www.digitaltipjar.com/%s" % tip_id,artist['name']+" (Digital Tip Jar)")
   if len(desc):
     evt['description'] = "".join(desc)
   if len(tags):
