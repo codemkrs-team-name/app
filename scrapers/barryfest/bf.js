@@ -5,7 +5,7 @@ var  sys 			= require('util')
     ,fs       = require('fs')
 		
     ,source   = 'http://www.google.com/calendar/feeds/matthew.r.rosenthal%40gmail.com/public/basic'
-    ,output   = 'bf.json'
+    ,output   = 'target/bf.json'
 
 		,time 		= /When:\s*([^<]*)<.*/
 		,location = /Where:\s*([^<]*)<.*/

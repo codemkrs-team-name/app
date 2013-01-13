@@ -16,7 +16,9 @@ def write_events(events):
         description=None,
         links=[])
     items.append(item)
-  print json.dumps(items,indent=2)
+  f = open('target/lw.json','w')
+  json.dump(items,f,indent=2)
+  f.close()
 
 if __name__ == '__main__':
   today = date.today()

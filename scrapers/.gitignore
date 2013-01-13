@@ -1,5 +1,6 @@
 *.py[cod]
 .Python
+target
 
 # C extensions
 *.so

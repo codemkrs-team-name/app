@@ -6,7 +6,7 @@ var  rest 			= require('restler')
 	,log  			= _.bind(console.log, console)
 
 	,source 		= 'http://www.offbeat.com/new-listings/?g=listing&d=date&t=detail&v='
-	,output 		= 'of.json'
+	,output 		= 'target/of.json'
 
 	,next3Days 		= _.chain(_.range(3))
 						.map(function(d){ return new Date().add({days: d}) })
