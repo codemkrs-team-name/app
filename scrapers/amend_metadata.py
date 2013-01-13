@@ -139,6 +139,10 @@ def update_event_with_artists(evt,evt_artists):
   if len(tags):
     evt['tags'] = ','.join(tags)
 
+def clean_text(event,field):
+  text = event[field]
+  text = html_parser.unescape(text).strip()
+  event[field] = text
 
 if __name__ == '__main__':
   artists = read_csv(ARTIST_URL)
@@ -153,11 +157,18 @@ if __name__ == '__main__':
   events = json.load(open(infile,'r'))
   html_parser = HTMLParser.HTMLParser()
 
+  # preamble
   for evt in events:
-    name = html_parser.unescape(evt['eventName']).strip()
+    clean_text(evt,'eventName')
+    clean_text(evt,'venue')
+
+  print "####"
+  # get to work
+  for evt in events:
+    name = evt['eventName']
     evt['eventName'] = name
     evt['ranking'] = 0
-    venue_name = html_parser.unescape(evt['venue'])
+    venue_name = evt['venue']
     evt_artists = artists_for_name(name)
     if len(evt_artists):
       update_event_with_artists(evt,evt_artists)
