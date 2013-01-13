@@ -5,6 +5,8 @@ import requests
 from datetime import date,timedelta
 import json
 
+NUM_DAYS = 4
+
 def write_events(events):
   items = []
   for e in events:
@@ -23,7 +25,7 @@ def write_events(events):
 if __name__ == '__main__':
   today = date.today()
   events = []
-  for n in xrange(0,3):
+  for n in xrange(0,NUM_DAYS):
     day = today + timedelta(n)
     events += sorted(livewire.parse_calendar(day),key=lambda x:x['name'])
   write_events(events)

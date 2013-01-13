@@ -8,14 +8,14 @@ var  rest 			= require('restler')
 	,source 		= 'http://www.offbeat.com/new-listings/?g=listing&d=date&t=detail&v='
 	,output 		= 'target/of.json'
 
-	,next3Days 		= _.chain(_.range(3))
+	,next4Days 		= _.chain(_.range(4))
 						.map(function(d){ return new Date().add({days: d}) })
 						.map(function(d){ return d.toFormat('YYYYMMDD') })
 						.value()
 	results 		= []
 	;
 
-	_.each(next3Days, getEventsOn(_.after(3, function writeToFile(results) {
+	_.each(next4Days, getEventsOn(_.after(4, function writeToFile(results) {
 		fs.writeFile(output, JSON.stringify(results));
 	})) );
 
