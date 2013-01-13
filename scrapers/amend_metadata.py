@@ -9,6 +9,7 @@ import csv
 import StringIO
 from csvkit.unicsv import UnicodeCSVDictReader,UnicodeCSVWriter
 import requests
+from datetime import datetime
 
 ARTIST_URL = 'https://docs.google.com/spreadsheet/pub?key=0Au-GFjxq7ilLdHRnNnA2c3F1WU1hX3c4Q1lPYWRuQkE&single=true&gid=0&output=csv'
 VENUE_URL = 'https://docs.google.com/spreadsheet/pub?key=0Au-GFjxq7ilLdHRnNnA2c3F1WU1hX3c4Q1lPYWRuQkE&single=true&gid=1&output=csv'
@@ -106,6 +107,7 @@ def venue_for_name(name):
   return None
 
 def update_event_with_venue(evt,venue):
+  evt['venue'] = venue['name']
   if venue['address']:
     evt['address'] = ('''
 %(address)s<br>
@@ -149,6 +151,12 @@ def clean_text(event,field):
   text = html_parser.unescape(text).strip()
   event[field] = text
 
+def events_soon(event):
+  event_ts = datetime.fromtimestamp(event['time'])
+  now = datetime.now()
+  delta = event_ts-now
+  return delta.days <= 4
+
 if __name__ == '__main__':
   artists = read_csv(ARTIST_URL)
   artists_index = index(artists,canonical_artist)
@@ -163,11 +171,15 @@ if __name__ == '__main__':
   html_parser = HTMLParser.HTMLParser()
 
   # preamble
+  # incoming events are not super strict on days
+  # filter to within next four days
+  events = filter(events_soon,events)
+  # event name and venue have html entity codes in there
   for evt in events:
     clean_text(evt,'eventName')
     clean_text(evt,'venue')
 
-  print "####"
+  print "#### %d" % len(events)
   # get to work
   for evt in events:
     name = evt['eventName']
@@ -184,6 +196,19 @@ if __name__ == '__main__':
       update_event_with_venue(evt,venue)
     else:
       print "No Venue: %s" % venue_name
+
+  # dedup - we may have resolved venues with different names 
+  # to the same venue so we can dedup there
+  unique_events = []
+  event_keys = set()
+  for e in events:
+    key = "%s/%s" % (e['venue'],e['time'])
+    if key not in event_keys:
+      event_keys.add(key)
+      unique_events.append(e)
+    else:
+      print "de-duplicated %s" % key
+
   outfile = sys.argv[2]
   f = open(outfile,'w')
-  json.dump(events,f,indent=2)
+  json.dump(unique_events,f,indent=2)
