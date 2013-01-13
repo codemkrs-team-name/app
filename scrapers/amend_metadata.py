@@ -110,5 +110,5 @@ if __name__ == '__main__':
       print "No Venue: %s" % venue_name
     #print evt
 
-f = open('events-final.json','w')
+f = open('target/events-final.json','w')
 json.dump(events,f,indent=2)
