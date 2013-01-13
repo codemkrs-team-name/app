@@ -103,8 +103,8 @@ def venue_for_name(name):
 def update_event_with_venue(evt,venue):
   if venue['street-address']:
     evt['address'] = ('''
-%(street-address)s<br>
-%(locality)s, %(region)s %(postal-code)s
+%(address)s<br>
+%(city)s, %(state)s %(zip)code)s
         ''' % venue).strip()
   if venue.get('price'):
     evt['price'] = venue['price']
