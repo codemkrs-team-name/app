@@ -16,6 +16,7 @@ Then do this
 	source bin/activate
 	pip install stdeb
 	pip install -r requirements.txt
+	mkdir target
 
 # To run scraper:
 
