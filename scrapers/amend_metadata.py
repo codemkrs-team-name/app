@@ -1,7 +1,19 @@
-import csvutils
+# -*- coding: utf-8 -*-
 import json
 import sys
 import re
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+import HTMLParser
+import codecs
+import csv
+import cStringIO
+from csvkit.unicsv import UnicodeCSVDictReader,UnicodeCSVWriter
+
+def read_csv(filename):
+  f = open(filename,'r')
+  reader = UnicodeCSVDictReader(f)
+  return list(reader)
 
 def canonical(string):
   string = re.sub(r'[^\w\s]','',string)
@@ -28,24 +40,39 @@ def artists_for_name(name):
       artists.append(artist)
   return artists
 
+
 def venue_for_name(name):
   global venues_index
   name = canonical(name)
-  return venues_index.get(name)
+  v = venues_index.get(name)
+  if v:
+    return v
+  # no exact hit - do fuzzy match
+  hit,score = process.extractOne(name,venues_index.keys())
+  # 90 is excellent
+  # 80 is good
+  # lets be optimisitic
+  if score >= 80:
+    return venues_index[hit]
+  return None
+
+
 
 if __name__ == '__main__':
-  artists = csvutils.read_csv('artists.csv')
+  artists = read_csv('artists.csv')
   artists_index = index(artists)
-  venues = csvutils.read_csv('venues.csv')
+  venues = read_csv('venues.csv')
   venues_index = index(venues)
 
   events = json.load(sys.stdin)
+  html_parser = HTMLParser.HTMLParser()
 
   for evt in events:
-    name = evt['eventName']
+    name = html_parser.unescape(evt['eventName']).strip()
+    evt['eventName'] = name
     # TODO: get ranking in here
     evt['ranking'] = 0
-    venue_name = evt['venue']
+    venue_name = html_parser.unescape(evt['venue'])
     evt_artists = artists_for_name(name)
     desc = []
     tags = []
@@ -79,6 +106,8 @@ if __name__ == '__main__':
       if venue['lat'] and venue['lon']:
         evt['location'] = dict(lat=float(venue['lat']),
                                lon=float(venue['lon']))
+    else:
+      print "No Venue: %s" % venue_name
     #print evt
 
 f = open('events-final.json','w')
