@@ -11,8 +11,8 @@ import StringIO
 from csvkit.unicsv import UnicodeCSVDictReader,UnicodeCSVWriter
 import requests
 
-ARTIST_URL = 'https://docs.google.com/spreadsheet/pub?key=0AgYaEMipFpK9dHBEMkVqR2I4ZlVpM0pSNDVuOEwtVFE&single=true&gid=0&output=csv'
-VENUE_URL = 'https://docs.google.com/spreadsheet/pub?key=0AgYaEMipFpK9dFNab1JNM01CUnhLUDk2WnhPVzlZWGc&single=true&gid=0&output=csv'
+ARTIST_URL = 'https://docs.google.com/spreadsheet/pub?key=0Au-GFjxq7ilLdHRnNnA2c3F1WU1hX3c4Q1lPYWRuQkE&single=true&gid=0&output=csv'
+VENUE_URL = 'https://docs.google.com/spreadsheet/pub?key=0Au-GFjxq7ilLdHRnNnA2c3F1WU1hX3c4Q1lPYWRuQkE&single=true&gid=1&output=csv'
 
 def read_csv(url):
   resp = requests.get(url)
