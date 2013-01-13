@@ -9,7 +9,7 @@ var eventList = [];
 
 var fuzzyMatches = [];
 
-var uselessWords = ['of', 'and', 'the'];
+var uselessWords = ['of', 'and', 'the','&'];
 
 var removeUselessWords = function(arr) {
 	return _.reject(arr, function(elem) { return _.contains(uselessWords, elem); });
