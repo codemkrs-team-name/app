@@ -98,10 +98,7 @@ scrapers.forEach(function(s) {
 				e.time = e.time.unix();
 			});
 			fs.writeFileSync('target/events-' + moment().format('YYYY-MM-DD') + '.json', JSON.stringify(eventList));
-			eventList.forEach(function(e) {
-				e.time = moment(e.time).format('ddd MMMM DD, h A');
-			});
-			fs.writeFileSync('target/events.json', JSON.stringify(eventList));
+			fs.writeFileSync('target/events.json', JSON.stringify(eventList,null,'  '));
 			fuzzyMatches.sort(function(a, b) {
 				return a.localeCompare(b);
 			});
