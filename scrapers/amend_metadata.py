@@ -42,6 +42,11 @@ def index(rows,index_func=canonical):
   for r in rows:
     key = index_func(r['name'])
     indexed_rows[key] = r
+    if 'alt_name' in r:
+      for name in re.split(r'\n',r['alt_name']):
+        name = name.strip()
+        if name:
+          indexed_rows[index_func(name)] = r
   return indexed_rows
   
 def single_artist_for_name(name):
@@ -106,7 +111,7 @@ def update_event_with_venue(evt,venue):
   if venue.get('phone'):
     evt['phone'] = re.sub(r'[^\d]','',venue.get('phone'))
   if venue.get('venuepage_href'):
-    add_event_link(evt,'venue',venue['venuepage_label'],venue['venuepage_href'])
+    add_event_link(evt,'venue',venue['name'],venue['url'])
   if venue['lat'] and venue['lon']:
     evt['location'] = dict(lat=float(venue['lat']),
         lon=float(venue['lon']))
