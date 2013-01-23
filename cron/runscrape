@@ -1,4 +1,4 @@
 #!/bin/bash
-cd /home/ec2-user/app/scrapers
+cd /root/app/scrapers
 ./scrape.sh
 cp target/events.json /var/www/html/events.json
