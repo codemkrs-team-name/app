@@ -1,4 +1,7 @@
 #!/bin/bash
+now=`date`
+logfile=/root/scrape.log
 cd /root/app/scrapers
-./scrape.sh
+echo "------------ $now ------------" >> $logfile
+./scrape.sh >> $logfile
 cp target/events.json /var/www/html/events.json
