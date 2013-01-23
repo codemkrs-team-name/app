@@ -38,49 +38,25 @@ var addEvent = function(ev) {
 	eventList.push(ev);
 };
 
-var scraper = function(cmd, outfile) {
-	return function(done) {
-		var processReturnedEvents = function(error, stdout, stderr) {
-			var eventsToProcess;
-			if (!outfile) {
-				eventsToProcess = JSON.parse(stdout.toString());
-			} else {
-				eventsToProcess = JSON.parse(fs.readFileSync(outfile));
-			}
-			for (var i = 0; i < eventsToProcess.length; i++) {
-				addEvent(eventsToProcess[i]);
-			}
-			done();
-		};
-		if (refresh) {
-			exec(cmd, processReturnedEvents);
-		} else {
-			processReturnedEvents();
-		}
-	};
-};
+var scrape = function(outfile) {
+    var eventsToProcess = JSON.parse(fs.readFileSync(outfile));
+    for (var i = 0; i < eventsToProcess.length; i++) {
+      addEvent(eventsToProcess[i]);
+    }
+}
 
-var scrapers = [
-  scraper('livewire/bin/python livewire/scrape_events.py','target/lw.json'),
-  scraper('node offbeat/of.js', 'target/of.json'),
-  scraper('node barryfest/bf.js', 'target/bf.json')
-];
+scrape('target/lw.json');
+scrape('target/of.json');
+scrape('target/bf.json');
 var outfile = process.argv[2]
-var scrapersRunning = scrapers.length;
-scrapers.forEach(function(s) {
-	s(function() {
-		if (--scrapersRunning === 0) {
-			eventList.sort(function(a, b) {
-				var diff = a.time.unix() - b.time.unix();
-				if (diff === 0) {
-					diff = a.venue.localeCompare(b.venue);
-				}
-				return diff;
-			});
-			eventList.forEach(function(e) {
-				e.time = e.time.unix();
-			});
-			fs.writeFileSync(outfile, JSON.stringify(eventList,null,'  '));
-		}
-	});
+eventList.sort(function(a, b) {
+  var diff = a.time.unix() - b.time.unix();
+  if (diff === 0) {
+    diff = a.venue.localeCompare(b.venue);
+  }
+  return diff;
 });
+eventList.forEach(function(e) {
+  e.time = e.time.unix();
+});
+fs.writeFileSync(outfile, JSON.stringify(eventList,null,'  '));
