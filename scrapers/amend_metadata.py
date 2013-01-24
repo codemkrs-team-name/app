@@ -190,12 +190,12 @@ if __name__ == '__main__':
     if len(evt_artists):
       update_event_with_artists(evt,evt_artists)
     else:
-      print "Missing artist: %s" % name
+      print "Missing artist: %s" % name.encode("utf-8")
     venue = venue_for_name(venue_name)
     if venue:
       update_event_with_venue(evt,venue)
     else:
-      print "No Venue: %s" % venue_name
+      print "No Venue: %s" % venue_name.encode("utf-8")
 
   # dedup - we may have resolved venues with different names 
   # to the same venue so we can dedup there
@@ -207,7 +207,7 @@ if __name__ == '__main__':
       event_keys.add(key)
       unique_events.append(e)
     else:
-      print "de-duplicated %s" % key
+      print "de-duplicated %s" % key.encode("utf-8")
 
   outfile = sys.argv[2]
   f = open(outfile,'w')
