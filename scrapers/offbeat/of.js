@@ -47,6 +47,7 @@ function parse(p) {
 		,time: text(texts[0])
 		,image: null
 		,price: null
+		,source: 'http://www.offbeat.com/new-orleans-concert-listings/'
 		,description: null
 		,links: []
 	};
