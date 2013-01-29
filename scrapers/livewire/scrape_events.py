@@ -16,6 +16,7 @@ def write_events(events):
         image=None,
         price=None,
         description=None,
+        source='http://www.wwoz.org/new-orleans-community/music-calendar',
         links=[])
     items.append(item)
   f = open('target/lw.json','w')
