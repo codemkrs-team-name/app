@@ -25,6 +25,7 @@ rest.get(source).on('complete', function(result) {
   			,time: fix(x.content[0]._.match(time)[1])
   			,image: null
   			,price: null
+  			,source: 'http://barryfest.com/'
         ,description: null
         ,links: x.link[0] && [
           {
