@@ -9,7 +9,7 @@ var eventList = [];
 
 var fuzzyMatches = [];
 
-var uselessWords = ['of', 'and', 'the','&'];
+var uselessWords = ['of', 'and', '&', '+'];
 
 var removeUselessWords = function(arr) {
 	return _.reject(arr, function(elem) { return _.contains(uselessWords, elem); });
@@ -25,7 +25,8 @@ var fuzzyMatch = function(a, b) {
 }
 
 var addEvent = function(ev) {
-	ev.time = moment(ev.time, ['ddd MMMM DD, h A', 'YYYY-MM-DD HH']);
+	ev.originalDateTimeString = ev.time
+	ev.time = parseDateTime(ev.originalDateTimeString);
 	ev.time.year(moment().year());
 	if (ev.time.month() == 11 || ev.time.unix() < moment().unix()) return;
 	ev.venue = ev.venue.trim().replace(new RegExp("\u2019"), "'").replace(/\s+/, " ");
@@ -60,3 +61,23 @@ eventList.forEach(function(e) {
   e.time = e.time.unix();
 });
 fs.writeFileSync(outfile, JSON.stringify(eventList,null,'  '));
+
+
+function parseDateTime(timeString) {
+	var m;
+
+	if( /\w{3} \w+ \d\d?, \d\d?:\d\d \w\w/.test(timeString) )  
+		// Mon February 4, 1:00 PM
+		return moment(new Date(moment(timeString, "ddd MMMM D, hh:mm a").toDate().setYear(moment().year())))
+	if( /\w{3} \w{3} \d\d?, \d{4} \d\d?:\d\d\w\w/.test(timeString) )
+		// Sat Mar 2, 2013 10:30pm to 10:30pm CST
+		return moment(timeString, "ddd MMM D, YYYY hh:mma");
+	if((m = moment(timeString, "ddd MMM D, YYYY hha")).isValid()) 
+		// Sat Mar 2, 2013 10pm to 10pm CST
+		return m;
+	if((m = moment(timeString, "YYYY-MM-DD HH:mm") ).isValid())
+		// 2013-02-08 17:00
+		return m;
+	return moment(timeString); //catchall
+}
+
